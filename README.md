@@ -5,9 +5,9 @@
 <img src="https://img.shields.io/badge/for-spicetify-FA9128.svg?style=for-the-badge" alt="For Spicetify">
 <img src="https://img.shields.io/badge/license-MIT-A31F34.svg?style=for-the-badge" alt="MIT License">
 <a href="https://discord.itsmeow.dev/"><img src="https://img.shields.io/discord/504369356260769792.svg?logo=discord&amp;style=for-the-badge" alt="Discord"></a>
-<img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dits_meow%26type%3Dpatrons&amp;style=for-the-badge" alt="PayPal"></p>
+<a href="https://patreon.itsmeow.dev/"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dits_meow%26type%3Dpatrons&amp;style=for-the-badge" alt="PayPal"></a></p>
 
-<p align="center"><em>The first implementation of <a href="https://canvas.spotify.com/]">Spotify Canvas</a> for the Desktop client ever!</em></p>
+<p align="center"><em>The first implementation of <a href="https://canvas.spotify.com/">Spotify Canvas</a> for the Desktop client ever!</em></p>
 
 ## Demo
 
