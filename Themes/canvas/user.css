@@ -1,0 +1,73 @@
+/*
+CANVAS!!!
+*/
+/* Hide image */
+.video-full-screen.canvas-show
+  .album-art
+  .album-art__foreground
+  .album-art__image {
+  display: none;
+}
+
+/* Add shadow behind track name in middle */
+.video-full-screen.canvas-show
+  .album-art
+  .album-art__foreground
+  .album-art__track-details {
+  box-shadow: 1px 1px 10px 10px #00000066;
+  background-color: #00000066;
+}
+
+/* Remove margin from top of track name */
+.video-full-screen.canvas-show
+  .album-art
+  .album-art__foreground
+  .album-art__track-details
+  .album-art__track-title {
+  margin-top: 0;
+}
+
+/* Place track name at 3/4 height of display and on top of everything */
+.video-full-screen.canvas-show .album-art .album-art__foreground {
+  z-index: 3;
+  top: 50%;
+  height: 50%;
+}
+
+/* Put background behind canvas */
+.video-full-screen.canvas-show .album-art .album-art__background {
+  z-index: 1;
+}
+
+/* Fill and center canvas, put it between background and title. Hide when not active */
+#CanvasWrapper {
+  display: none;
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: transparent;
+}
+
+/* Show the canvas! */
+.canvas-show #CanvasWrapper {
+  display: flex;
+}
+
+/* Border and shadow the video so it looks nice */
+#CanvasDisplay {
+  height: 100%;
+  width: auto;
+  background: none;
+  margin: 0;
+  text-align: center;
+  border: 1px solid #00000055;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  box-shadow: 1px 0px 20px 20px #00000055;
+}
