@@ -141,7 +141,11 @@
           return;
         }
         // album art gets removed from DOM a lot, fix it!
-        if (!document.getElementById("CanvasWrapper") && wrapper) {
+        if (
+          document.querySelectorAll("#video-player .album-art").length > 0 &&
+          !document.getElementById("CanvasWrapper") &&
+          wrapper
+        ) {
           document
             .querySelectorAll("#video-player .album-art")[0]
             .appendChild(wrapper);
