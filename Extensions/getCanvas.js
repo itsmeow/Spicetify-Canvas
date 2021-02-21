@@ -183,8 +183,18 @@
                 decoded = EntityCanvazResponse.decode(faceDemons).canvases;
               } catch (error) {
                 // can't decode protobuf due to UTF-8's limitations as a raw binary data transport format. use regex to pull canvas link
+                // Canvas link formats:
+                // - Artist uploaded, dashes in filename
+                //   https://open.spotify.com/track/4esxro8J1rbsalCPb0yrgC?si=82rTqJQ8TyWmxt0SQqrqqw
+                //   https://canvaz.scdn.co/upload/artist/7yxi31szvlbwvKq9dYOmFI/video/606438b3-a9fe-4a88-8162-0bafd90cb2e6.cnvs.mp4
+                // - Licensor uploaded
+                //   https://open.spotify.com/track/4vUmTMuQqjdnvlZmAH61Qk?si=4ZzOZ7rwSYKiUhbrEKngTQ
+                //   https://canvaz.scdn.co/upload/licensor/3ZBqv9LoqAZkFanJh73zcz/video/476607389c954254ac01d4c5efa6bd96.cnvs.mp4
+                // - Spotify uploaded?, arbitrary name
+                //   https://open.spotify.com/track/4wFjTWCunQFKtukqrNijEt?si=VTizcrPyTVmkEJFNU0I55w
+                //   https://canvaz.scdn.co/canvaz-content/migos/MigosMotorSport.cnvs.mp4
                 decoded = res._body.match(
-                  /https:\/\/canvaz\.scdn\.co\/upload\/artist\/[a-zA-Z0-9]+\/video\/[a-zA-Z0-9\-]+.cnvs.mp4/gm
+                  /https:\/\/canvaz\.scdn\.co\/[a-zA-Z0-9\/\-]+.cnvs.mp4/gm
                 );
                 // note that sometimes this fails because the string will terminate early due to weird UTF-8 responses. Not much we can do about this unless I can figure out how to use Bridge with raw binary data.
               }
