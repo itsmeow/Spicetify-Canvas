@@ -184,7 +184,7 @@
               } catch (error) {
                 // can't decode protobuf due to UTF-8's limitations as a raw binary data transport format. use regex to pull canvas link
                 decoded = res._body.match(
-                  /https:\/\/canvaz\.scdn\.co\/upload\/artist\/[a-zA-Z0-9]+\/video\/[a-zA-Z0-9]+.cnvs.mp4/gm
+                  /https:\/\/canvaz\.scdn\.co\/upload\/artist\/[a-zA-Z0-9]+\/video\/[a-zA-Z0-9\-]+.cnvs.mp4/gm
                 );
                 // note that sometimes this fails because the string will terminate early due to weird UTF-8 responses. Not much we can do about this unless I can figure out how to use Bridge with raw binary data.
               }
