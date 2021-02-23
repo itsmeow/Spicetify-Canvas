@@ -92,7 +92,7 @@ You will need the prerequisites for your OS listed [here](https://bitbucket.org/
 I will sum them up:
 
 - [Python](https://www.python.org/downloads/) (2.7 or 3.8/3.9, I used 3.8)
-- [Visual Studio Community 2017 or 2019](https://visualstudio.microsoft.com/downloads/)
+- [Visual Studio Community 2017 or 2019, or Visual Studio Build Tools 2017 or 2019](https://visualstudio.microsoft.com/downloads/)
 - "Desktop development with C++", "C++ MFC for latest v(version) build tools (x86 & x64)", C++ ATL for latest v(version) build tools (x86 & x64)" support Visual Studio components. You can install these with the "Visual Studio Installer" program, click Modify on your VS install and find those packages. You don't need the ARM components.
 - "Windows 10 SDK 10.0.19041" or higher as a VS component or from [Microsoft's installer](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/). Make sure you enable the "SDK Debugging Tools" in this installer. If you use Visual Studio to install it, Chromium says you can get it from "Control Panel → Programs → Programs and Features → Select the “Windows Software Development Kit” → Change → Change → Check “Debugging Tools For Windows” → Change", but personally I had to use the installer and select _only_ the debugging tools since I already had the SDK from VS. **If you miss the debugger installation step, your build will error.**
 
