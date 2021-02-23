@@ -98,7 +98,7 @@ I will sum them up:
 
 #### Getting the branch number
 
-Next, you need to find the CEF branch for your Spotify version. Spotify lists these relations [here](https://www.spotify.com/us/opensource/). If you hover over the "CEF version" link for your Spotify version, it links to a URL that looks like this `https://bitbucket.org/chromiumembedded/cef/get/4240.tar.bz2`. The number you want is the number before `.tar.bz2`. As of current, that branch number is `4240` in Chromium version `86.0.4240.198` for Spotify `1.1.48.625.g1c87c7f7`.
+Next, you need to find the CEF branch for your Spotify version. Spotify lists these relations [here](https://www.spotify.com/us/opensource/). If you hover over the "CEF version" link for your Spotify version, it links to a URL that looks like this `https://bitbucket.org/chromiumembedded/cef/get/4280.tar.bz2`. The number you want is the number before `.tar.bz2`. As of current, that branch number is `4280` in Chromium version `87.0.4280.141` for Spotify `1.1.53.608.g7ed9c03a`.
 
 You can verify you have the correct version by enabling devtools in spicetify `spicetify enable-devtool apply`, right clicking somewhere, press "Show Chrome Tools", and then click the `chrome://version` link. The CEF and chromium version should match.
 
@@ -123,10 +123,10 @@ set CEF_USE_GN=1
 set GN_DEFINES=is_official_build=true proprietary_codecs=true ffmpeg_branding=Chrome
 set GYP_MSVS_VERSION=2019
 set CEF_ARCHIVE_FORMAT=tar.bz2
-python automate-git.py --download-dir=c:\code\chromium_git --depot-tools-dir=c:\code\depot_tools --branch=4240 --minimal-distrib --client-distrib --force-clean --no-debug-build
+python automate-git.py --download-dir=c:\code\chromium_git --depot-tools-dir=c:\code\depot_tools --branch=4280 --minimal-distrib --client-distrib --force-clean --no-debug-build
 ```
 
-Change `4240` from `--branch` to the proper branch for your Spotify version.
+Change `4280` from `--branch` to the proper branch for your Spotify version.
 
 If you use VS 2017, change `GYP_MSVS_VERSION` to 2017.
 
@@ -138,9 +138,9 @@ Change directories to the automate folder. `cd C:\code\automate`
 
 Execute the script. `build.bat`. This will take _many_ hours to download CEF, depot_tools, and Chromium. After which it will check out the correct branches and build Chromium.
 
-#### Possible Errors + Solutions
+### Possible Errors + Solutions
 
-### CalledProcessError: Command 'gn gen out'
+#### CalledProcessError: Command 'gn gen out'
 
 If you get an error that looks like this:
 
@@ -150,7 +150,7 @@ subprocess2.CalledProcessError: Command 'gn gen out\\Debug_GN_x86 --ide=vs2019 -
 
 It means you forgot to install the Windows SDK debugging tools. Review the Prerequisites.
 
-### Hash does not appear to be a valid hash in this repo
+#### Hash does not appear to be a valid hash in this repo
 
 If you get an error that looks like this when it says `Running "gclient revert --nohooks"` after the download stage (I did, not sure why) `gclient_scm.NoUsableRevError: 82> Hash ee537ac096667eed6559124164c3e8482646fd77 does not appear to be a valid hash in this repo`, go to `C:/depot_tools/gclient_scm.py`, open it in a text editor, find line 879 (Ctrl + F "NoUsableRevError"), and comment out `logging.warning("Couldn't find usable revision, will retrying to update instead: %s", e.message))`. It's split onto three lines, so put a `#` before each line.
 
@@ -168,7 +168,7 @@ It will end up like this:
 
 After editing that, go to your automate batch script and add `--no-depot-tools-update` to the arguments list for the python command, otherwise your changes will be overwritten. Rerun the script, it should've saved most of the progress from that point.
 
-#### Results
+### Results
 
 After around 12 hours with my AMD Ryzen 3600, my build was completed, not counting errors and troubleshooting. The results are placed in `C:\code\chromium_git\chromium\src\out\Release_GN_x86`. You will know if it's done because `cefclient.exe` will exist in this folder. Run the client, go to some sites, make sure it works. Go to `https://html5test.com`, check under `Video` and make sure there is a check next to `H.264 support`. If not, you messed something up.
 
