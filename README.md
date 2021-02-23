@@ -120,7 +120,7 @@ Create a batch script inside `automate`, name `build.bat`. If the name change do
 
 ```
 set CEF_USE_GN=1
-set GN_DEFINES=is_official_build=true proprietary_codecs=true ffmpeg_branding=Chrome
+set GN_DEFINES=is_official_build=true proprietary_codecs=true ffmpeg_branding=Chrome enable_nacl=false blink_symbol_level=0 symbol_level=0
 set GYP_MSVS_VERSION=2019
 set CEF_ARCHIVE_FORMAT=tar.bz2
 python automate-git.py --download-dir=c:\code\chromium_git --depot-tools-dir=c:\code\depot_tools --branch=4240 --minimal-distrib --client-distrib --force-clean --no-debug-build
