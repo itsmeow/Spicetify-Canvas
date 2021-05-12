@@ -1,6 +1,6 @@
 <h1 align="center">Spicetify Canvas</h1>
 <p align="center">
-<img src="https://i.imgur.com/RBnOZ6h.gif" alt="Canvas Example" />
+<img src="https://i.imgur.com/budrcEN.gif" alt="Canvas Example" />
 </p>
 &nbsp;
 <p align="center">
@@ -9,29 +9,22 @@
 <a href="https://discord.itsmeow.dev/"><img src="https://img.shields.io/discord/504369356260769792.svg?logo=discord&amp;style=for-the-badge" alt="Discord"></a>
 <a href="https://patreon.itsmeow.dev/"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dits_meow%26type%3Dpatrons&amp;style=for-the-badge" alt="PayPal"></a></p>
 
-<p align="center"><em>The first implementation of <a href="https://canvas.spotify.com/">Spotify Canvas</a> for the Desktop client ever!</em></p>
+<p align="center"><em>The first implementation of <a href="https://canvas.spotify.com/">Spotify Canvas</a> for the Desktop client ever!</em><br/><strong>With XPUI / Spicetify 2.0 support!</strong></p>
 
 ## Demo
 
-The extension is designed to show Canvases in the fullscreen view. The following are with minimal theming (this is what is included in `Themes/canvas`):
+The extension is designed to show Canvases in the fullscreen view. The following are with minimal theming (this is what is included in `Themes/canvas`, for the new XPUI):
 
-![Canvas w/o mouse overlay](https://i.imgur.com/ByZ2Yzr.png)
-![Canvas, overlay](https://i.imgur.com/6hDOr7h.png)
-
-My personal theme looks like this:
-
-![Canvas w/ my theme](https://i.imgur.com/ysLU6mL.png)
-![Canvas w/ my theme, overlay](https://i.imgur.com/KYjATiD.png)
+![Canvas w/o mouse overlay](https://i.imgur.com/e5usAdB.png)
+![Canvas, overlay](https://i.imgur.com/NtJbFgE.png)
 
 ## How it works
 
 The mobile Spotify client uses a protocol called [Protobuf](https://developers.google.com/protocol-buffers) to communicate with the bridge/cosmos/hermes API and request a canvas link for a given track. However, the Desktop and Web clients do not have protobuf-based implementations and purely send JSON requests.
 
-The canvas endpoint only exists in protobuf format, so you have to use some tricks to get Cosmos (the name for hermes on desktop) to give you a canvas link. Since the method only accepts string/object input, in order to send a protobuf request, I used the [JS protobuf library](https://www.npmjs.com/package/protobufjs) to first get the binary representation of my request, then I used `TextDecoder` to encode the binary into a UTF-8 string: `new TextDecoder().decode(binaryData)`. This results in a very messy not-very-UTF-8 string that is sent to the `hm://canvaz-cache/v0/canvases` endpoint. The endpoint responds with another messy string, which is then decoded into Protobuf via `new TextEncoder().encode(res._body)`.
-
 [librespot-java](https://github.com/librespot-org/librespot-java/) was vital for figuring out the Protobuf format and endpoint for this request. Big thank you to [@devgianlu](https://github.com/devgianlu) for his work on librespot and the EntityCanvazRequest proto file.
 
-However, UTF-8 is not a very good binary storage method and thus loses a ton of data in the process if there are any canvases present, and it's impossible to decode a full protobuf packet from the string. Luckily for us, the canvas link is 100% UTF-8 compatible and will almost always be parseable from the raw string, so I parse it out with the following regex: `/https:\/\/canvaz\.scdn\.co\/upload\/artist\/[a-zA-Z0-9]+\/video\/[a-zA-Z0-9]+.cnvs.mp4/gm`. Note that this sometimes fails (I'm assuming because of a null-byte terminator in the protobuf data response), but it's quite inconsistent.
+Using the knowledge from librespot, I was able to make a fetch call that bypasses the javascript Cosmos API and does a direct web request with binary protobuf data. You can then decode the binary response to get a list of canvases for a given track (previously, I had to encode the binary as UTF-8 and use the builtin Cosmos client, which was very unreliable).
 
 After that, a video tag is inserted into the fullscreen overlay's DOM with the src set to the canvas.
 
