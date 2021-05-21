@@ -121,6 +121,11 @@
         } catch (error) {
           log("[Canvas/Protobuf] Error decoding canvas request response body!");
           log(error);
+          try {
+            let json = JSON.parse(new TextDecoder().decode(buffer));
+            log("[Canvas/Protobuf] Got JSON response:");
+            log(json);
+          } catch (error2) {}
         }
         return res;
       }
@@ -272,18 +277,27 @@
         return randArray(this.spLocationsResolved);
       }
 
+      getToken() {
+        return Spicetify.Platform.TokenProvider({ preferCached: true }).then(
+          (res) => res.accessToken
+        );
+      }
+
       /*
        * Send the request as raw binary data so protobuf works properly
        */
       fetchProtobufAuthRaw(urlExt, method, body) {
-        return fetch("https://" + this.getSpLocation() + urlExt, {
-          method: method,
-          headers: {
-            Authorization: "Bearer " + Spicetify.Platform.Session.accessToken,
-            "Content-Type": "application/x-protobuf",
-          },
-          body: body,
-        })
+        return this.getToken()
+          .then((token) =>
+            fetch("https://" + this.getSpLocation() + urlExt, {
+              method: method,
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/x-protobuf",
+              },
+              body: body,
+            })
+          )
           .then((res) => res.arrayBuffer())
           .catch((err) => {
             log(
@@ -302,7 +316,11 @@
           "POST",
           Protobuf.encodeRequest(track)
         )
-          .then((res) => Protobuf.decodeResponse(new Uint8Array(res)))
+          .then((res) => {
+            log("[Canvas/SPClient] Request response (raw):");
+            log(res);
+            return Protobuf.decodeResponse(new Uint8Array(res));
+          })
           .then((res) => {
             if (
               res === undefined ||
