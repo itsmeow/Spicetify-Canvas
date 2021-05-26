@@ -97,26 +97,25 @@ You can verify you have the correct version by enabling devtools in spicetify `s
 
 #### Setup
 
-Next, go to `C:\` in This PC and create a folder called `code`. Inside `code`, make a folder called `automate`, a folder called `chromium_git`, and a folder called `depot_tools`.
+Next, go to `C:\` in This PC and create a folder called `code`. Inside `code`, make a folder called `chromium_git`, and a folder called `depot_tools`.
 This is the end result:
 
 ```
-C:/code/
-  automate/
-  chromium_git/
-  depot_tools/
+C:\code\
+  chromium_git\
+  depot_tools\
 ```
 
-Next, download [automate-git.py](https://bitbucket.org/chromiumembedded/cef/raw/master/tools/automate/automate-git.py) and place it in `C:/code/automate/`.
+Next, download [automate-git.py](https://bitbucket.org/chromiumembedded/cef/raw/master/tools/automate/automate-git.py) and place it in `C:\code\`.
 
-Create a batch script inside `automate`, name `build.bat`. If the name change doesn't change the icon, press View in file explorer and check "File name extensions" and rename it again. Paste the following into this script and save it (you can open it by right clicking and pressing edit):
+Create a batch script inside `C:\code\`, name it `build.bat`. If the name change doesn't change the icon, press View in file explorer and check "File name extensions" and rename it again. Paste the following into this script and save it (you can open it by right clicking and pressing edit):
 
 ```
 set CEF_USE_GN=1
 set GN_DEFINES=is_official_build=true proprietary_codecs=true ffmpeg_branding=Chrome enable_nacl=false blink_symbol_level=0 symbol_level=0
 set GYP_MSVS_VERSION=2019
 set CEF_ARCHIVE_FORMAT=tar.bz2
-python automate-git.py --download-dir=c:\code\chromium_git --depot-tools-dir=c:\code\depot_tools --branch=4389 --minimal-distrib --client-distrib --force-clean --no-debug-build
+python automate-git.py --download-dir=C:\code\chromium_git --branch=4389 --no-debug-build
 ```
 
 Change `4389` from `--branch` to the proper branch for your Spotify version.
@@ -125,11 +124,15 @@ If you use VS 2017, change `GYP_MSVS_VERSION` to 2017.
 
 Next, open command prompt as administator (NOT POWERSHELL). You can do this by searching Command Prompt in the Start Menu, right clicking it, and pressing "Run as Administrator".
 
-Change directories to the automate folder. `cd C:\code\automate`
+Change directories to the automate folder. `cd C:\code\automate` (if you use another drive than C, use `cd /d (path)`)
 
 #### Run it!
 
 Execute the script. `build.bat`. This will take _many_ hours to download CEF, depot_tools, and Chromium. After which it will check out the correct branches and build Chromium.
+
+### Re-using your folder
+
+If you want to use the CEF build folders again (for Spotify updates, it isn't super rare Spotify changes the internal CEF version used), you should add `--depot-tools-dir=C:\code\depot_tools` after the first run so that it won't download it again. You can also get commit checkout errors, so if you encounter any of those add `--force-clean` to remove the old commit data and force a change.
 
 ### Possible Errors + Solutions
 
@@ -159,7 +162,7 @@ It will end up like this:
       return self.update(options, [], file_list)
 ```
 
-After editing that, go to your automate batch script and add `--no-depot-tools-update` to the arguments list for the python command, otherwise your changes will be overwritten. Rerun the script, it should've saved most of the progress from that point.
+After editing that, go to your automate batch script and add `--no-depot-tools-update` and `--depot-tools-dir=C:\code\depot_tools` to the arguments list for the python command, otherwise your changes will be overwritten. Rerun the script, it should've saved most of the progress from that point.
 
 ### Results
 
