@@ -91,7 +91,7 @@ I will sum them up:
 
 #### Getting the branch number
 
-Next, you need to find the CEF branch for your Spotify version. Spotify lists these relations [here](https://www.spotify.com/us/opensource/). If you hover over the "CEF version" link for your Spotify version, it links to a URL that looks like this `https://bitbucket.org/chromiumembedded/cef/get/4389.tar.bz2`. The number you want is the number before `.tar.bz2`. As of current, that branch number is `4389` in Chromium version `89.0.4389.114` for Spotify `1.1.57.443.ga029a6c4`.
+Next, you need to find the CEF branch for your Spotify version. Spotify lists these relations [here](https://www.spotify.com/us/opensource/). If you hover over the "CEF version" link for your Spotify version, it links to a URL that looks like this `https://bitbucket.org/chromiumembedded/cef/get/4430.tar.bz2`. The number you want is the number before `.tar.bz2`. As of current, that branch number is `4430` in Chromium version `90.0.4430.93` for Spotify `1.1.60.668`.
 
 You can verify you have the correct version by enabling devtools in spicetify `spicetify enable-devtool apply`, right clicking somewhere, press "Show Chrome Tools", and then click the `chrome://version` link. The CEF and chromium version should match.
 
@@ -115,10 +115,10 @@ set CEF_USE_GN=1
 set GN_DEFINES=is_official_build=true proprietary_codecs=true ffmpeg_branding=Chrome enable_nacl=false blink_symbol_level=0 symbol_level=0
 set GYP_MSVS_VERSION=2019
 set CEF_ARCHIVE_FORMAT=tar.bz2
-python automate-git.py --download-dir=C:\code\chromium_git --branch=4389 --no-debug-build
+python automate-git.py --download-dir=C:\code\chromium_git --branch=4430 --no-debug-build
 ```
 
-Change `4389` from `--branch` to the proper branch for your Spotify version.
+Change `4430` from `--branch` to the proper branch for your Spotify version.
 
 If you use VS 2017, change `GYP_MSVS_VERSION` to 2017.
 
