@@ -168,21 +168,22 @@ After editing that, go to your automate batch script and add `--no-depot-tools-u
 
 After around 12 hours with my AMD Ryzen 3600, my build was completed, not counting errors and troubleshooting. The results are placed in `C:\code\chromium_git\chromium\src\out\Release_GN_x86`. You will know if it's done because `cefclient.exe` will exist in this folder. Run the client, go to some sites, make sure it works. Go to `https://html5test.com`, check under `Video` and make sure there is a check next to `H.264 support`. If not, you messed something up.
 
+You can also find the CEF binary distribution which contains the files you are looking for in `C:\code\chromium_git\chromium\src\cef\binary_distrib`. The non-symbol distrib will have the files you need in the `Release` and `Resources` folders, split up. Merge the two, and you should have all the files you need and some extras.
+
 If it works, good news, you're almost done!
 
-Now, in another Explorer, go to `%appdata%/Spotify`. You can type this in the address bar or use WinKey+R to open it. This folder contains your Spotify installation (Spotify.exe, cef.pak, etc).
+Now, in another Explorer, go to `%appdata%/Spotify`. You can type this in the address bar or use WinKey+R to open it. This folder contains your Spotify installation (Spotify.exe, resources.pak, etc).
 
-The first thing you need to do is **disable auto-updating**, because Spotify will overwrite your CEF patches every time you run `spicetify apply` otherwise. Do this by deleting or renaming `SpotifyMigrator.exe` or `SpotifyUpdate.exe` if present.
+The first thing you need to do is **disable auto-updating**, because Spotify will overwrite your CEF patches every time you run `spicetify apply` otherwise. Do this by deleting or renaming `SpotifyMigrator.exe` or `SpotifyUpdate.exe` if present. Note this method doesn't really work and your Spotify will update randomly anyway.
 
 Next, you will need to back up your old CEF assets. Create a folder called `backup` in the Spotify folder, and move into it all of the following files:
 
-- cef.pak
-- cef_100_percent.pak
-- cef_200_percent.pak
+- resources.pak
+- chrome_100_percent.pak
+- chrome_200_percent.pak
 - cef_extensions.pak
 - chrome_elf.dll
 - d3dcompiler_47.dll
-- devtools_resources.pak
 - icudtl.dat
 - libcef.dll
 - libEGL.dll
@@ -195,6 +196,8 @@ Next, you will need to back up your old CEF assets. Create a folder called `back
 Next, from the `Release_GN_x86` folder, copy all of the files and folders with names matching the above into your Spotify folder.
 
 The `locales` and `swiftshader` folders you copy will contain a bunch of `.info`, `.pdb`, and `.lib` files. You can delete any files that are not `.pak` or `.dll`.
+
+Note that Spotify includes a set of `.mo` files in the locales folder. Do not delete them.
 
 You should also copy the same set of files you copied into Spotify into another, safe folder, in case Spotify updates or is uninstalled. You DO NOT want to lose them and rebuild Chromium. I also copied my entire `Release_GN_x86` folder just to be sure, but it may be large.
 
