@@ -91,9 +91,21 @@ I will sum them up:
 
 #### Getting the branch number
 
-Next, you need to find the CEF branch for your Spotify version. Spotify lists these relations [here](https://www.spotify.com/us/opensource/). If you hover over the "CEF version" link for your Spotify version, it links to a URL that looks like this `https://bitbucket.org/chromiumembedded/cef/get/4430.tar.bz2`. The number you want is the number before `.tar.bz2`. As of current, that branch number is `4430` in Chromium version `90.0.4430.93` for Spotify `1.1.60.668`.
+Next, you need to find the CEF branch for your Spotify version. Spotify lists these relations [here](https://www.spotify.com/us/opensource/). If you hover over the "CEF version" link for your Spotify version, it links to a URL that looks like this `https://bitbucket.org/chromiumembedded/cef/get/4430.tar.bz2`.
+
+**Update: it appears Spotify is not as actively updating the relations anymore. Use the commit method instead of the branch method. 4430 in particular is picky about versions. Use `7a604aa` as your checkout commit for Spotify 1.1.60.668.**
+
+The number you want is the number before `.tar.bz2`. As of current, that branch number is `4430` in Chromium version `90.0.4430.93` for Spotify `1.1.60.668`.
 
 You can verify you have the correct version by enabling devtools in spicetify `spicetify enable-devtool apply`, right clicking somewhere, press "Show Chrome Tools", and then click the `chrome://version` link. The CEF and chromium version should match.
+
+If you really want precision (sometimes Spotify will break on a newer version despite being on the same branch, due to how CEF's versioning works), use a commit instead.
+
+#### Using a commit instead
+
+In the `chrome://version` menu (explanation above), find the CEF version. After the first `+`, there is a `g`, then a commit hash, then another `+`. Get the string of letters and numbers between `+g` and `+chromium`.
+
+This will be your checkout argument that you will use later.
 
 #### Setup
 
@@ -119,6 +131,7 @@ python automate-git.py --download-dir=C:\code\chromium_git --branch=4430 --no-de
 ```
 
 Change `4430` from `--branch` to the proper branch for your Spotify version.
+If you want to use a commit, **remove `--branch=...`**. Replace it with `--checkout=7a604aa`, using the correct commit tag. Make sure you don't include the first `g` from the CEF version.
 
 If you use VS 2017, change `GYP_MSVS_VERSION` to 2017.
 
@@ -134,6 +147,8 @@ Execute the script. `build.bat`. This will take _many_ hours to download CEF, de
 
 If you want to use the CEF build folders again (for Spotify updates, it isn't super rare Spotify changes the internal CEF version used), you should add `--depot-tools-dir=C:\code\depot_tools` after the first run so that it won't download it again. You can also get commit checkout errors, so if you encounter any of those add `--force-clean` to remove the old commit data and force a change.
 
+CEF also notes for "small incremental changes", you can use `--fast-update` to try to patch your existing build. You should probably only use this when going between commits on a branch, and not when changing branches.
+
 ### Possible Errors + Solutions
 
 #### CalledProcessError: Command 'gn gen out'
@@ -145,6 +160,8 @@ subprocess2.CalledProcessError: Command 'gn gen out\\Debug_GN_x86 --ide=vs2019 -
 ```
 
 It means you forgot to install the Windows SDK debugging tools. Review the Prerequisites.
+
+This error can also occur if Visual Studio was not found on the PATH in the default location. You should install it in the default location, but there is an environment variable that lets you change it? I would just install it in the default spot. I would also recommend using VS Build Tools instead if this is the case.
 
 #### Hash does not appear to be a valid hash in this repo
 
@@ -193,11 +210,11 @@ Next, you will need to back up your old CEF assets. Create a folder called `back
 - The entire `swiftshader` folder
 - The entire `locales` folder
 
-Next, from the `Release_GN_x86` folder, copy all of the files and folders with names matching the above into your Spotify folder.
+Next, from the `Release_GN_x86` folder (or `binary_distrib`), copy all of the files and folders with names matching the above into your Spotify folder.
 
 The `locales` and `swiftshader` folders you copy will contain a bunch of `.info`, `.pdb`, and `.lib` files. You can delete any files that are not `.pak` or `.dll`.
 
-Note that Spotify includes a set of `.mo` files in the locales folder. Do not delete them.
+Note that Spotify includes a set of `.mo` files in its locales folder. Do not delete them.
 
 You should also copy the same set of files you copied into Spotify into another, safe folder, in case Spotify updates or is uninstalled. You DO NOT want to lose them and rebuild Chromium. I also copied my entire `Release_GN_x86` folder just to be sure, but it may be large.
 
