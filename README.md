@@ -137,7 +137,7 @@ If you use VS 2017, change `GYP_MSVS_VERSION` to 2017.
 
 Next, open command prompt as administator (NOT POWERSHELL). You can do this by searching Command Prompt in the Start Menu, right clicking it, and pressing "Run as Administrator".
 
-Change directories to the automate folder. `cd C:\code\automate` (if you use another drive than C, use `cd /d (path)`)
+Change directories to the automate folder. `cd C:\code\` (if you use another drive than C, use `cd /d (path)`)
 
 #### Run it!
 
