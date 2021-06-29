@@ -278,9 +278,9 @@
       }
 
       getToken() {
-        return Spicetify.Platform.TokenProvider({ preferCached: true }).then(
-          (res) => res.accessToken
-        );
+        return Spicetify.Platform.AuthorizationAPI._tokenProvider({
+          preferCached: true,
+        }).then((res) => res.accessToken);
       }
 
       /*
