@@ -140,7 +140,7 @@
       static canvasURL = "";
 
       static inFullscreen() {
-        let fsDiv = document.querySelectorAll("#main > div > div:nth-child(5)");
+        let fsDiv = document.querySelectorAll("#main > div > div:nth-child(4)");
         return (
           document.documentElement.classList.contains("fullscreen") &&
           fsDiv.length > 0 &&
@@ -181,7 +181,7 @@
 
         // add wrapper to DOM
         let fullscreenElem = document.querySelectorAll(
-          "#main > div > div:nth-child(5) > div" // selects the fullscreen div
+          "#main > div > div:nth-child(4) > div" // selects the fullscreen div
         );
         if (fullscreenElem.length > 0) {
           fullscreenElem[0].appendChild(canvasWrapper);
