@@ -97,7 +97,7 @@ Next, you need to find the CEF branch for your Spotify version. Spotify lists th
 
 The number you want is the number before `.tar.bz2`. As of current, that branch number is `4430` in Chromium version `90.0.4430.93` for Spotify `1.1.60.668`.
 
-You can verify you have the correct version by enabling devtools in spicetify `spicetify enable-devtool apply`, right clicking somewhere, press "Show Chrome Tools", and then click the `chrome://version` link. The CEF and chromium version should match.
+You can verify you have the correct version by enabling devtools in spicetify `spicetify enable-devtools apply`, right clicking somewhere, press "Show Chrome Tools", and then click the `chrome://version` link. The CEF and chromium version should match.
 
 If you really want precision (sometimes Spotify will break on a newer version despite being on the same branch, due to how CEF's versioning works), use a commit instead.
 
