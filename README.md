@@ -127,7 +127,7 @@ set CEF_USE_GN=1
 set GN_DEFINES=is_official_build=true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false enable_nacl=false blink_symbol_level=0 symbol_level=0
 set GYP_MSVS_VERSION=2019
 set CEF_ARCHIVE_FORMAT=tar.bz2
-python automate-git.py --download-dir=C:\code\chromium_git --branch=4430 --no-debug-build
+python automate-git.py --download-dir=C:\code\chromium_git --branch=4430 --no-debug-build --with-pgo-profiles
 ```
 
 Change `4430` from `--branch` to the proper branch for your Spotify version.
