@@ -1,4 +1,7 @@
 (() => {
+  const config = {
+    enabledViews: ["fs", "npv"] // "fs" Full screen, "npv" Now Playing View
+  };
   const LOGGING = true;
   const importScript = (url) => {
     let script = document.createElement("script");
@@ -186,9 +189,13 @@
         
         // add wrapper to DOM
         if (this.inFullscreen()){
-          canvasWrapperElem = document.querySelector(this.canvasWrapperSelector.fs);
+          if(config.enabledViews.includes("fs")){
+            canvasWrapperElem = document.querySelector(this.canvasWrapperSelector.fs);
+          }
         } else {
-          canvasWrapperElem = document.querySelector(this.canvasWrapperSelector.npv);
+          if(config.enabledViews.includes("npv")){
+            canvasWrapperElem = document.querySelector(this.canvasWrapperSelector.npv);
+          }
         }
 
         if (canvasWrapperElem) {
@@ -201,9 +208,13 @@
       static getWrapper() {
         let wrapper = null;
         if(this.inFullscreen()){
-          wrapper = document.querySelector(this.canvasWrapperSelector.fs + " > #CanvasWrapper");
+          if(config.enabledViews.includes("fs")){
+            wrapper = document.querySelector(this.canvasWrapperSelector.fs + " > #CanvasWrapper");
+          }
         } else {
-          wrapper = document.querySelector(this.canvasWrapperSelector.npv + " > #CanvasWrapper");
+          if(config.enabledViews.includes("npv")){
+            wrapper = document.querySelector(this.canvasWrapperSelector.npv + " > #CanvasWrapper");
+          }
         }
         if (!wrapper) {
           this.clearWrapper();
@@ -222,9 +233,13 @@
       static getVideo() {
         let video = null;
         if(this.inFullscreen()){
-          video = document.querySelector(this.canvasWrapperSelector.fs + " > #CanvasWrapper > #CanvasDisplay");
+          if(config.enabledViews.includes("fs")){
+            video = document.querySelector(this.canvasWrapperSelector.fs + " > #CanvasWrapper > #CanvasDisplay");
+          }
         } else {
-          video = document.querySelector(this.canvasWrapperSelector.npv + " > #CanvasWrapper > #CanvasDisplay");
+          if(config.enabledViews.includes("npv")){
+            video = document.querySelector(this.canvasWrapperSelector.npv + " > #CanvasWrapper > #CanvasDisplay");
+          }
         }
         if (!video) {
           video = this.getWrapper().children.namedItem("CanvasDisplay");
