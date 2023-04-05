@@ -138,6 +138,7 @@
     class CanvasHandler {
       static canvasExists = false;
       static canvasURL = "";
+      static isVideo = true;
 
       static inFullscreen() {
         let fsDiv = document.querySelectorAll("#main > div > div:nth-child(5)");
@@ -168,16 +169,22 @@
         log("[Canvas/CanvasHandler] Canvas video element appended to DOM.");
         let canvasWrapper = document.createElement("div");
         canvasWrapper.id = "CanvasWrapper";
-        let video = document.createElement("video");
-        video.id = "CanvasDisplay";
-        video.setAttribute("autoplay", "");
-        video.setAttribute("loop", "");
-        video.setAttribute("muted", "");
-        video.setAttribute("crossorigin", "anonymous");
-        video.setAttribute("playsinline", "");
-        video.setAttribute("preload", "none");
-        video.setAttribute("type", "video/mp4");
-        canvasWrapper.appendChild(video);
+        if(this.isVideo) {
+          let video = document.createElement("video");
+          video.id = "CanvasDisplay";
+          video.setAttribute("autoplay", "");
+          video.setAttribute("loop", "");
+          video.setAttribute("muted", "");
+          video.setAttribute("crossorigin", "anonymous");
+          video.setAttribute("playsinline", "");
+          video.setAttribute("preload", "none");
+          video.setAttribute("type", "video/mp4");
+          canvasWrapper.appendChild(video);
+        } else {
+          let image = document.createElement("img");
+          image.id = "CanvasDisplay";
+          canvasWrapper.appendChild(image);
+        }
 
         // add wrapper to DOM
         let fullscreenElem = document.querySelectorAll(
@@ -197,6 +204,13 @@
         return wrapper;
       }
 
+      static clearWrapper() {
+        let wrapper = document.getElementById("CanvasWrapper");
+        if (wrapper) {
+          wrapper.remove();
+        }
+      }
+
       static getVideo() {
         let video = document.getElementById("CanvasDisplay");
         if (!video) {
@@ -212,8 +226,10 @@
             if (video.src !== this.canvasURL) {
               this.setVideo(this.canvasURL);
             }
-            if (video.paused) {
-              video.play();
+            if(this.isVideo){
+              if (video.paused) {
+                video.play();
+              }
             }
           }
         }
@@ -232,14 +248,28 @@
 
       static setVideo(canvas) {
         if (this.inFullscreen()) {
+          if(canvas.endsWith(".mp4") || !canvas){ // it's OK to put empty url in video tag but on an image it will show a broken image
+            if(!this.isVideo){
+              this.clearWrapper();
+            }
+            this.isVideo = true;
+          } else {
+            if(this.isVideo){
+              this.clearWrapper();
+            }
+            this.isVideo = false;
+          }
+  
           let video = this.getVideo();
           // set src and update CSS classes to style properly
           video.src = canvas;
           this.showCanvas();
-
-          // Go!
-          video.load();
-          video.play();
+  
+          if(this.isVideo){
+            // Go!
+            video.load();
+            video.play();
+          }
         }
       }
     }
