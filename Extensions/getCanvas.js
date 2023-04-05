@@ -1,4 +1,7 @@
 (() => {
+  const config = {
+    enabledViews: ["fs", "npv"] // "fs" Full screen, "npv" Now Playing View
+  };
   const LOGGING = true;
   const importScript = (url) => {
     let script = document.createElement("script");
@@ -136,15 +139,19 @@
     };
 
     class CanvasHandler {
+      static canvasWrapperSelector = {
+        fs: "#main > div > div:nth-child(5)", // Full screen
+        npv: "#VideoPlayerNpv_ReactPortal" // Now Playing View
+      }
       static canvasExists = false;
       static canvasURL = "";
 
       static inFullscreen() {
-        let fsDiv = document.querySelectorAll("#main > div > div:nth-child(5)");
+        let fsDiv = document.querySelector(this.canvasWrapperSelector.fs);
         return (
           document.documentElement.classList.contains("fullscreen") &&
-          fsDiv.length > 0 &&
-          fsDiv[0].hasChildNodes()
+          fsDiv &&
+          fsDiv.hasChildNodes()
         );
       }
 
@@ -166,6 +173,7 @@
 
       static createWrapper() {
         log("[Canvas/CanvasHandler] Canvas video element appended to DOM.");
+        let canvasWrapperElem = null;
         let canvasWrapper = document.createElement("div");
         canvasWrapper.id = "CanvasWrapper";
         let video = document.createElement("video");
@@ -178,27 +186,61 @@
         video.setAttribute("preload", "none");
         video.setAttribute("type", "video/mp4");
         canvasWrapper.appendChild(video);
-
+        
         // add wrapper to DOM
-        let fullscreenElem = document.querySelectorAll(
-          "#main > div > div:nth-child(5) > div" // selects the fullscreen div
-        );
-        if (fullscreenElem.length > 0) {
-          fullscreenElem[0].appendChild(canvasWrapper);
+        if (this.inFullscreen()){
+          if(config.enabledViews.includes("fs")){
+            canvasWrapperElem = document.querySelector(this.canvasWrapperSelector.fs);
+          }
+        } else {
+          if(config.enabledViews.includes("npv")){
+            canvasWrapperElem = document.querySelector(this.canvasWrapperSelector.npv);
+          }
         }
+
+        if (canvasWrapperElem) {
+          canvasWrapperElem.appendChild(canvasWrapper);
+        }
+        
         return canvasWrapper;
       }
 
       static getWrapper() {
-        let wrapper = document.getElementById("CanvasWrapper");
+        let wrapper = null;
+        if(this.inFullscreen()){
+          if(config.enabledViews.includes("fs")){
+            wrapper = document.querySelector(this.canvasWrapperSelector.fs + " > #CanvasWrapper");
+          }
+        } else {
+          if(config.enabledViews.includes("npv")){
+            wrapper = document.querySelector(this.canvasWrapperSelector.npv + " > #CanvasWrapper");
+          }
+        }
         if (!wrapper) {
+          this.clearWrapper();
           wrapper = this.createWrapper();
         }
         return wrapper;
       }
 
+      static clearWrapper() {
+        let wrapper = document.getElementById("CanvasWrapper");
+        if (wrapper) {
+          wrapper.remove();
+        }
+      }
+
       static getVideo() {
-        let video = document.getElementById("CanvasDisplay");
+        let video = null;
+        if(this.inFullscreen()){
+          if(config.enabledViews.includes("fs")){
+            video = document.querySelector(this.canvasWrapperSelector.fs + " > #CanvasWrapper > #CanvasDisplay");
+          }
+        } else {
+          if(config.enabledViews.includes("npv")){
+            video = document.querySelector(this.canvasWrapperSelector.npv + " > #CanvasWrapper > #CanvasDisplay");
+          }
+        }
         if (!video) {
           video = this.getWrapper().children.namedItem("CanvasDisplay");
         }
@@ -206,15 +248,13 @@
       }
 
       static updateVideo() {
-        if (this.inFullscreen()) {
-          let video = this.getVideo();
-          if (this.canvasExists) {
-            if (video.src !== this.canvasURL) {
-              this.setVideo(this.canvasURL);
-            }
-            if (video.paused) {
-              video.play();
-            }
+        let video = this.getVideo();
+        if (this.canvasExists) {
+          if (video.src !== this.canvasURL) {
+            this.setVideo(this.canvasURL);
+          }
+          if (video.paused) {
+            video.play();
           }
         }
       }
@@ -231,16 +271,14 @@
       }
 
       static setVideo(canvas) {
-        if (this.inFullscreen()) {
-          let video = this.getVideo();
-          // set src and update CSS classes to style properly
-          video.src = canvas;
-          this.showCanvas();
+        let video = this.getVideo();
+        // set src and update CSS classes to style properly
+        video.src = canvas;
+        this.showCanvas();
 
-          // Go!
-          video.load();
-          video.play();
-        }
+        // Go!
+        video.load();
+        video.play();
       }
     }
 

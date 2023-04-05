@@ -18,6 +18,12 @@ The extension is designed to show Canvases in the fullscreen view. The following
 ![Canvas w/o mouse overlay](https://i.imgur.com/e5usAdB.png)
 ![Canvas, overlay](https://i.imgur.com/NtJbFgE.png)
 
+## Configuration
+
+The extension has a few configuration options, which can be found in the `getCanvas.js` file under the `config` object. The options are as follows:
+
+- `enabledViews`: An array of views to enable the extension on. Possible values are `"fs"` (Full Screen) and `"npv"` (Now Playing View).
+
 ## How it works
 
 The mobile Spotify client uses a protocol called [Protobuf](https://developers.google.com/protocol-buffers) to communicate with the bridge/cosmos/hermes API and request a canvas link for a given track. However, the Desktop and Web clients do not have protobuf-based implementations and purely send JSON requests.
