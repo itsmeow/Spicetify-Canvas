@@ -2,12 +2,9 @@
 CANVAS!!!
 */
 /* Fill and center canvas, put it between background and title. Hide when not active */
+
 #CanvasWrapper {
   display: none;
-  z-index: 1;
-  position: absolute;
-  top: 0;
-  bottom: 0;
   height: 100%;
   width: 100%;
   align-items: center;
@@ -16,18 +13,29 @@ CANVAS!!!
   background: transparent;
 }
 
+.fullscreen #CanvasWrapper {
+  position: fixed;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
 /* Show the canvas! */
 .canvas-show #CanvasWrapper {
   display: flex;
 }
 
-/* Border and shadow the video so it looks nice */
 #CanvasDisplay {
   height: 100%;
-  width: auto;
+  width: 100%;
   background: none;
   margin: 0;
   text-align: center;
+}
+/* Border and shadow the video so it looks nice */
+.fullscreen #CanvasDisplay {
+  width: auto;
   border: 1px solid #00000055;
   border-top-width: 0;
   border-bottom-width: 0;
