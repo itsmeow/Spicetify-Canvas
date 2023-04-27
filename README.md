@@ -228,6 +228,50 @@ Finally, start Spotify! If you did things correctly, Spotify should run as norma
 
 If you made it this far, you are truly technically compotent! Congratulations.
 
+Now that you have shown that you are truly competent, here is a little lazy upgrade script that you can use inside your build.bat:
+```
+spicetify upgrade
+spicetify backup apply
+
+set "filename=%appdata%\Spotify\libcef.dll"
+
+for /f "delims=" %%v in ('powershell "(Get-Item '%filename%').VersionInfo.ProductVersion.TrimEnd()"') do (
+    set "version=%%v"
+)
+
+echo Product version: %version%
+
+set "input=%version%"
+
+for /f "tokens=2 delims=+" %%a in ('echo %input% ^| findstr /r /c:"\+g.*\+chromium"') do (
+    set "output=%%a"
+)
+
+set "output=%output:~1%"
+
+echo %output%
+
+set CEF_USE_GN=1
+set GN_DEFINES=is_official_build=true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false enable_nacl=false blink_symbol_level=0 symbol_level=0
+set GYP_MSVS_VERSION=2022
+set CEF_ARCHIVE_FORMAT=tar.bz2
+python automate-git.py --depot-tools-dir=C:\code\depot_tools --download-dir=C:\code\chromium_git --checkout=%output% --no-debug-build --force-clean --with-pgo-profiles
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\resources.pak %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\chrome_100_percent.pak %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\chrome_200_percent.pak %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\chrome_elf.dll %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\d3dcompiler_47.dll %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\icudtl.dat %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\libcef.dll %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\libEGL.dll %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\libGLESv2.dll %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\snapshot_blob.bin %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\v8_context.snapshot.bin %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\swiftshader %appdata%\Spotify\swiftshader /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\locales %appdata%\Spotify\locales /i /y
+spicetify apply
+```
+
 #### Help and Troubleshooting
 
 If you come accross any issues not listed above, let me know! You can create an issue here or chat in my [Discord](https://discord.itsmeow.dev/). If you find a solution to a certain issue, feel free to PR the issue and solution under the Errors header.
