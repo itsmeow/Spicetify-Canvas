@@ -91,9 +91,9 @@ You will need the prerequisites for your OS listed [here](https://bitbucket.org/
 I will sum them up:
 
 - [Python](https://www.python.org/downloads/) (2.7 or 3.8/3.9, I used 3.8)
-- [Visual Studio Community 2017 or 2019, or Visual Studio Build Tools 2017 or 2019](https://visualstudio.microsoft.com/downloads/)
+- [Visual Studio Community 2017 or 2019, or Visual Studio Build Tools 2017 or 2019](https://visualstudio.microsoft.com/downloads/) EDIT: several months ago the Windows 10 SDK Version changed, which pretty much requires VS2022 to be installed
 - "Desktop development with C++", "C++ MFC for latest v(version) build tools (x86 & x64)", C++ ATL for latest v(version) build tools (x86 & x64)" support Visual Studio components. You can install these with the "Visual Studio Installer" program, click Modify on your VS install and find those packages. You don't need the ARM components.
-- "Windows 10 SDK 10.0.19041" or higher as a VS component or from [Microsoft's installer](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/). Make sure you enable the "SDK Debugging Tools" in this installer. If you use Visual Studio to install it, Chromium says you can get it from "Control Panel → Programs → Programs and Features → Select the “Windows Software Development Kit” → Change → Change → Check “Debugging Tools For Windows” → Change", but personally I had to use the installer and select _only_ the debugging tools since I already had the SDK from VS. **If you miss the debugger installation step, your build will error.**
+- "Windows 10 SDK 10.0.19041" or higher as a VS component or from [Microsoft's installer](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/). Make sure you enable the "SDK Debugging Tools" in this installer. If you use Visual Studio to install it, Chromium says you can get it from "Control Panel → Programs → Programs and Features → Select the “Windows Software Development Kit” → Change → Change → Check “Debugging Tools For Windows” → Change", but personally I had to use the installer and select _only_ the debugging tools since I already had the SDK from VS. **If you miss the debugger installation step, your build will error.** EDIT: You may encounter an error asking you to install a Win 10 SDK with a version higher than 10.0.22000.0. Don't worry, this does not exist. You can usually fix that by installing the current Win11 SDK alongside the last Win10 version (Win11 starts with 10.0.22000.0)
 
 #### Getting the branch number
 
@@ -128,18 +128,19 @@ Next, download [automate-git.py](https://bitbucket.org/chromiumembedded/cef/raw/
 
 Create a batch script inside `C:\code\`, name it `build.bat`. If the name change doesn't change the icon, press View in file explorer and check "File name extensions" and rename it again. Paste the following into this script and save it (you can open it by right clicking and pressing edit):
 
+EDIT: Spotify recently switched to 64-bit, you can check this in your spotify app by clicking on the three menu dots in the top left, help, about Spotify. The following intsructions will continuew wtih the assumptions that you want to build cef for 64-bit.
 ```
 set CEF_USE_GN=1
-set GN_DEFINES=is_official_build=true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false enable_nacl=false blink_symbol_level=0 symbol_level=0
-set GYP_MSVS_VERSION=2019
+set GN_DEFINES=is_official_build=true is_component_build = true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false target_cpu = "x64" enable_nacl=false blink_symbol_level=0 symbol_level=0
+set GYP_MSVS_VERSION=2022
 set CEF_ARCHIVE_FORMAT=tar.bz2
-python automate-git.py --download-dir=C:\code\chromium_git --branch=4430 --no-debug-build --with-pgo-profiles
+python3 automate-git.py --download-dir=C:\code\chromium_git --branch=4430 --no-debug-build --x64-build --with-pgo-profiles
 ```
 
 Change `4430` from `--branch` to the proper branch for your Spotify version.
 If you want to use a commit, **remove `--branch=...`**. Replace it with `--checkout=7a604aa`, using the correct commit tag. Make sure you don't include the first `g` from the CEF version.
 
-If you use VS 2017, change `GYP_MSVS_VERSION` to 2017.
+If you use VS 2019, change `GYP_MSVS_VERSION` to 2019. EDIT: Changed the code to use 2022, please update accordingly in the future
 
 Next, open command prompt as administator (NOT POWERSHELL). You can do this by searching Command Prompt in the Start Menu, right clicking it, and pressing "Run as Administrator".
 
@@ -189,7 +190,7 @@ After editing that, go to your automate batch script and add `--no-depot-tools-u
 
 ### Results
 
-After around 12 hours with my AMD Ryzen 3600, my build was completed, not counting errors and troubleshooting. The results are placed in `C:\code\chromium_git\chromium\src\out\Release_GN_x86`. You will know if it's done because `cefclient.exe` will exist in this folder. Run the client, go to some sites, make sure it works. Go to `https://html5test.com`, check under `Video` and make sure there is a check next to `H.264 support`. If not, you messed something up.
+After around 12 hours with my AMD Ryzen 3600, my build was completed, not counting errors and troubleshooting. The results are placed in `C:\code\chromium_git\chromium\src\out\Release_GN_x64`. You will know if it's done because `cefclient.exe` will exist in this folder. Run the client, go to some sites, make sure it works. Go to `https://html5test.com`, check under `Video` and make sure there is a check next to `H.264 support`. If not, you messed something up.
 
 You can also find the CEF binary distribution which contains the files you are looking for in `C:\code\chromium_git\chromium\src\cef\binary_distrib`. The non-symbol distrib will have the files you need in the `Release` and `Resources` folders, split up. Merge the two, and you should have all the files you need and some extras.
 
@@ -204,7 +205,7 @@ Next, you will need to back up your old CEF assets. Create a folder called `back
 - resources.pak
 - chrome_100_percent.pak
 - chrome_200_percent.pak
-- cef_extensions.pak
+- cef_extensions.pak EDIT: Does not exist anymore
 - chrome_elf.dll
 - d3dcompiler_47.dll
 - icudtl.dat
@@ -213,7 +214,7 @@ Next, you will need to back up your old CEF assets. Create a folder called `back
 - libGLESv2.dll
 - snapshot_blob.bin
 - v8_context.snapshot.bin
-- The entire `swiftshader` folder
+- The entire `swiftshader` folder EDIT: Does not exist anymore
 - The entire `locales` folder
 
 Next, from the `Release_GN_x86` folder (or `binary_distrib`), copy all of the files and folders with names matching the above into your Spotify folder.
@@ -222,7 +223,7 @@ The `locales` and `swiftshader` folders you copy will contain a bunch of `.info`
 
 Note that Spotify includes a set of `.mo` files in its locales folder. Do not delete them.
 
-You should also copy the same set of files you copied into Spotify into another, safe folder, in case Spotify updates or is uninstalled. You DO NOT want to lose them and rebuild Chromium. I also copied my entire `Release_GN_x86` folder just to be sure, but it may be large.
+You should also copy the same set of files you copied into Spotify into another, safe folder, in case Spotify updates or is uninstalled. You DO NOT want to lose them and rebuild Chromium. I also copied my entire `Release_GN_x64` folder just to be sure, but it may be large.
 
 Finally, start Spotify! If you did things correctly, Spotify should run as normal, except now the Canvases will appear. You can delete the contents of `C:/code/chromium_git` and `C:/code/depot_tools` to save space, but I recommend keeping the script just in case Spotify updates.
 
