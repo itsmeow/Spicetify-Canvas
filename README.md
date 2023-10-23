@@ -230,8 +230,6 @@ If you made it this far, you are truly technically compotent! Congratulations.
 
 Now that you have shown that you are truly competent, here is a little lazy upgrade script that you can use inside your build.bat:
 ```
-spicetify upgrade
-spicetify backup apply
 
 set "filename=%appdata%\Spotify\libcef.dll"
 
@@ -252,24 +250,26 @@ set "output=%output:~1%"
 echo %output%
 
 set CEF_USE_GN=1
-set GN_DEFINES=is_official_build=true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false enable_nacl=false blink_symbol_level=0 symbol_level=0
+set GN_DEFINES=is_official_build=true is_component_build = true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false target_cpu = "x64" enable_nacl=false blink_symbol_level=0 symbol_level=0
 set GYP_MSVS_VERSION=2022
 set CEF_ARCHIVE_FORMAT=tar.bz2
-python automate-git.py --depot-tools-dir=C:\code\depot_tools --download-dir=C:\code\chromium_git --checkout=%output% --no-debug-build --force-clean --with-pgo-profiles
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\resources.pak %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\chrome_100_percent.pak %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\chrome_200_percent.pak %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\chrome_elf.dll %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\d3dcompiler_47.dll %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\icudtl.dat %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\libcef.dll %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\libEGL.dll %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\libGLESv2.dll %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\snapshot_blob.bin %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\v8_context.snapshot.bin %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\swiftshader %appdata%\Spotify\swiftshader /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x86\locales %appdata%\Spotify\locales /i /y
+python3 automate-git.py --download-dir=C:\code\chromium_git --checkout=%output% --force-clean --x64-build --no-debug-build --with-pgo-profiles
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\resources.pak %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\chrome_100_percent.pak %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\chrome_200_percent.pak %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\chrome_elf.dll %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\d3dcompiler_47.dll %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\icudtl.dat %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\libcef.dll %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\libEGL.dll %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\libGLESv2.dll %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\snapshot_blob.bin %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\v8_context.snapshot.bin %appdata%\Spotify /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\swiftshader %appdata%\Spotify\swiftshader /i /y
+xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\locales %appdata%\Spotify\locales /i /y
 spicetify apply
+	
+
 ```
 
 #### Help and Troubleshooting
