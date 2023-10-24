@@ -91,27 +91,20 @@ You will need the prerequisites for your OS listed [here](https://bitbucket.org/
 I will sum them up:
 
 - [Python](https://www.python.org/downloads/) (2.7 or 3.8/3.9, I used 3.8)
-- [Visual Studio Community 2017 or 2019, or Visual Studio Build Tools 2017 or 2019](https://visualstudio.microsoft.com/downloads/) EDIT: several months ago the Windows 10 SDK Version changed, which pretty much requires VS2022 to be installed
+- [Visual Studio Community 2022, or Visual Studio Build Tools 2022](https://visualstudio.microsoft.com/downloads/) 
 - "Desktop development with C++", "C++ MFC for latest v(version) build tools (x86 & x64)", C++ ATL for latest v(version) build tools (x86 & x64)" support Visual Studio components. You can install these with the "Visual Studio Installer" program, click Modify on your VS install and find those packages. You don't need the ARM components.
-- "Windows 10 SDK 10.0.19041" or higher as a VS component or from [Microsoft's installer](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/). Make sure you enable the "SDK Debugging Tools" in this installer. If you use Visual Studio to install it, Chromium says you can get it from "Control Panel → Programs → Programs and Features → Select the “Windows Software Development Kit” → Change → Change → Check “Debugging Tools For Windows” → Change", but personally I had to use the installer and select _only_ the debugging tools since I already had the SDK from VS. **If you miss the debugger installation step, your build will error.** EDIT: You may encounter an error asking you to install a Win 10 SDK with a version higher than 10.0.22000.0. Don't worry, this does not exist. You can usually fix that by installing the current Win11 SDK alongside the last Win10 version (Win11 starts with 10.0.22000.0)
+- "Windows 10/11 SDK 10.0.22621" or higher as a VS component or from [Microsoft's installer](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/). Make sure you enable the "SDK Debugging Tools" in this installer. If you use Visual Studio to install it, Chromium says you can get it from "Control Panel → Programs → Programs and Features → Select the “Windows Software Development Kit” → Change → Change → Check “Debugging Tools For Windows” → Change", but personally I had to use the installer and select _only_ the debugging tools since I already had the SDK from VS. **If you miss the debugger installation step, your build will error.** 
 
-#### Getting the branch number
+#### Using a commit
 
-Next, you need to find the CEF branch for your Spotify version. Spotify lists these relations [here](https://www.spotify.com/us/opensource/). If you hover over the "CEF version" link for your Spotify version, it links to a URL that looks like this `https://bitbucket.org/chromiumembedded/cef/get/4430.tar.bz2`.
-
-**Update: it appears Spotify is not as actively updating the relations anymore. Use the commit method instead of the branch method. 4430 in particular is picky about versions. Use `7a604aa` as your checkout commit for Spotify 1.1.60.668.**
-
-The number you want is the number before `.tar.bz2`. As of current, that branch number is `4430` in Chromium version `90.0.4430.93` for Spotify `1.1.60.668`.
-
-You can verify you have the correct version by enabling devtools in spicetify `spicetify enable-devtools apply`, right clicking somewhere, press "Show Chrome Tools", and then click the `chrome://version` link. The CEF and chromium version should match.
-
-If you really want precision (sometimes Spotify will break on a newer version despite being on the same branch, due to how CEF's versioning works), use a commit instead.
-
-#### Using a commit instead
-
-In the `chrome://version` menu (explanation above), find the CEF version. After the first `+`, there is a `g`, then a commit hash, then another `+`. Get the string of letters and numbers between `+g` and `+chromium`.
+To gain access to the version menu, use `spicetify enable-devtools` in cmd, then click on the three menu dots, develop -> chrome tools
+In the `chrome://version` menu, find the CEF version. After the first `+`, there is a `g`, then a commit hash, then another `+`. Get the string of letters and numbers between `+g` and `+chromium`.
 
 This will be your checkout argument that you will use later.
+
+For example: +gd8c85ac+chromium results in the checkout=d8c85ac
+
+
 
 #### Setup
 
@@ -128,19 +121,17 @@ Next, download [automate-git.py](https://bitbucket.org/chromiumembedded/cef/raw/
 
 Create a batch script inside `C:\code\`, name it `build.bat`. If the name change doesn't change the icon, press View in file explorer and check "File name extensions" and rename it again. Paste the following into this script and save it (you can open it by right clicking and pressing edit):
 
-EDIT: Spotify recently switched to 64-bit, you can check this in your spotify app by clicking on the three menu dots in the top left, help, about Spotify. The following intsructions will continuew wtih the assumptions that you want to build cef for 64-bit.
+Spotify recently switched to 64-bit, you can check this in your spotify app by clicking on the three menu dots in the top left, help, about Spotify. The following intsructions will continue wtih the assumption that you want to build cef for 64-bit.
 ```
 set CEF_USE_GN=1
-set GN_DEFINES=is_official_build=true is_component_build = true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false target_cpu = "x64" enable_nacl=false blink_symbol_level=0 symbol_level=0
+set GN_DEFINES=is_official_build=true is_component_build=true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false target_cpu ="x64" enable_nacl=false blink_symbol_level=0 symbol_level=0
 set GYP_MSVS_VERSION=2022
 set CEF_ARCHIVE_FORMAT=tar.bz2
-python3 automate-git.py --download-dir=C:\code\chromium_git --branch=4430 --no-debug-build --x64-build --with-pgo-profiles
+python3 automate-git.py --download-dir=C:\code\chromium_git --checkout=d8c85ac --no-debug-build --x64-build --with-pgo-profiles
 ```
 
-Change `4430` from `--branch` to the proper branch for your Spotify version.
-If you want to use a commit, **remove `--branch=...`**. Replace it with `--checkout=7a604aa`, using the correct commit tag. Make sure you don't include the first `g` from the CEF version.
 
-If you use VS 2019, change `GYP_MSVS_VERSION` to 2019. EDIT: Changed the code to use 2022, please update accordingly in the future
+If you use a different version of VS, change `GYP_MSVS_VERSION` to your version.
 
 Next, open command prompt as administator (NOT POWERSHELL). You can do this by searching Command Prompt in the Start Menu, right clicking it, and pressing "Run as Administrator".
 
@@ -214,12 +205,11 @@ Next, you will need to back up your old CEF assets. Create a folder called `back
 - libGLESv2.dll
 - snapshot_blob.bin
 - v8_context.snapshot.bin
-- The entire `swiftshader` folder EDIT: Does not exist anymore
 - The entire `locales` folder
 
-Next, from the `Release_GN_x86` folder (or `binary_distrib`), copy all of the files and folders with names matching the above into your Spotify folder.
+Next, from the `Release_GN_x64` folder (or `binary_distrib`), copy all of the files and folders with names matching the above into your Spotify folder.
 
-The `locales` and `swiftshader` folders you copy will contain a bunch of `.info`, `.pdb`, and `.lib` files. You can delete any files that are not `.pak` or `.dll`.
+The `locales` folder you copy will contain a bunch of `.info`, `.pdb`, and `.lib` files. You can delete any files that are not `.pak` or `.dll`.
 
 Note that Spotify includes a set of `.mo` files in its locales folder. Do not delete them.
 
@@ -227,7 +217,7 @@ You should also copy the same set of files you copied into Spotify into another,
 
 Finally, start Spotify! If you did things correctly, Spotify should run as normal, except now the Canvases will appear. You can delete the contents of `C:/code/chromium_git` and `C:/code/depot_tools` to save space, but I recommend keeping the script just in case Spotify updates.
 
-If you made it this far, you are truly technically compotent! Congratulations.
+If you made it this far, you are truly technically competent! Congratulations.
 
 Now that you have shown that you are truly competent, here is a little lazy upgrade script that you can use inside your build.bat:
 ```
@@ -251,7 +241,7 @@ set "output=%output:~1%"
 echo %output%
 
 set CEF_USE_GN=1
-set GN_DEFINES=is_official_build=true is_component_build = true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false target_cpu = "x64" enable_nacl=false blink_symbol_level=0 symbol_level=0
+set GN_DEFINES=is_official_build=true is_component_build=true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false target_cpu ="x64" enable_nacl=false blink_symbol_level=0 symbol_level=0
 set GYP_MSVS_VERSION=2022
 set CEF_ARCHIVE_FORMAT=tar.bz2
 python3 automate-git.py --download-dir=C:\code\chromium_git --checkout=%output% --force-clean --x64-build --no-debug-build --with-pgo-profiles
@@ -266,7 +256,6 @@ xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\libEGL.dll %appdata%\
 xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\libGLESv2.dll %appdata%\Spotify /i /y
 xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\snapshot_blob.bin %appdata%\Spotify /i /y
 xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\v8_context.snapshot.bin %appdata%\Spotify /i /y
-xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\swiftshader %appdata%\Spotify\swiftshader /i /y
 xcopy c:\code\chromium_git\chromium\src\out\Release_GN_x64\locales %appdata%\Spotify\locales /i /y
 spicetify apply
 	
