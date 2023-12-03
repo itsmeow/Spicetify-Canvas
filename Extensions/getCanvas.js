@@ -407,7 +407,7 @@
 
       // track change, update canvas
       CanvasHandler.clearCanvas();
-      let res = await client.postCanvasRequest(Spicetify.Player.data.track.uri);
+      let res = await client.postCanvasRequest(Spicetify.Player.data.item.uri);
       if (res.canvases.length > 0) {
         // pick a random canvas if there is multiple
         CanvasHandler.setCanvas(randArray(res.canvases).url);
