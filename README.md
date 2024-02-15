@@ -196,7 +196,6 @@ Next, you will need to back up your old CEF assets. Create a folder called `back
 - resources.pak
 - chrome_100_percent.pak
 - chrome_200_percent.pak
-- cef_extensions.pak EDIT: Does not exist anymore
 - chrome_elf.dll
 - d3dcompiler_47.dll
 - icudtl.dat
