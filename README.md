@@ -121,7 +121,7 @@ Next, download [automate-git.py](https://bitbucket.org/chromiumembedded/cef/raw/
 
 Create a batch script inside `C:\code\`, name it `build.bat`. If the name change doesn't change the icon, press View in file explorer and check "File name extensions" and rename it again. Paste the following into this script and save it (you can open it by right clicking and pressing edit):
 
-Spotify recently switched to 64-bit, you can check this in your spotify app by clicking on the three menu dots in the top left, help, about Spotify. The following intsructions will continue wtih the assumption that you want to build cef for 64-bit.
+Spotify recently switched to 64-bit, you can check this in your Spotify app by clicking on the three menu dots in the top left, then Help -> About Spotify. The following instructions will continue with the assumption that you want to build CEF for 64-bit.
 ```
 set CEF_USE_GN=1
 set GN_DEFINES=is_official_build=true is_component_build=true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false target_cpu="x64" enable_nacl=false blink_symbol_level=0 symbol_level=0
