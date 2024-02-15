@@ -219,7 +219,7 @@ Finally, start Spotify! If you did things correctly, Spotify should run as norma
 If you made it this far, you are truly technically competent! Congratulations.
 
 Now that you have shown that you are truly competent, here is a little lazy upgrade script that you can use inside your build.bat:
-```
+```batch
 
 set "filename=%appdata%\Spotify\libcef.dll"
 
