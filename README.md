@@ -124,7 +124,7 @@ Create a batch script inside `C:\code\`, name it `build.bat`. If the name change
 Spotify recently switched to 64-bit, you can check this in your spotify app by clicking on the three menu dots in the top left, help, about Spotify. The following intsructions will continue wtih the assumption that you want to build cef for 64-bit.
 ```
 set CEF_USE_GN=1
-set GN_DEFINES=is_official_build=true is_component_build=true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false target_cpu ="x64" enable_nacl=false blink_symbol_level=0 symbol_level=0
+set GN_DEFINES=is_official_build=true is_component_build=true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false target_cpu="x64" enable_nacl=false blink_symbol_level=0 symbol_level=0
 set GYP_MSVS_VERSION=2022
 set CEF_ARCHIVE_FORMAT=tar.bz2
 python3 automate-git.py --download-dir=C:\code\chromium_git --checkout=d8c85ac --no-debug-build --x64-build --with-pgo-profiles
