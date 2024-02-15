@@ -241,7 +241,7 @@ set "output=%output:~1%"
 echo %output%
 
 set CEF_USE_GN=1
-set GN_DEFINES=is_official_build=true is_component_build=true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false target_cpu ="x64" enable_nacl=false blink_symbol_level=0 symbol_level=0
+set GN_DEFINES=is_official_build=true is_component_build=true proprietary_codecs=true ffmpeg_branding=Chrome use_thin_lto=false target_cpu="x64" enable_nacl=false blink_symbol_level=0 symbol_level=0
 set GYP_MSVS_VERSION=2022
 set CEF_ARCHIVE_FORMAT=tar.bz2
 python3 automate-git.py --download-dir=C:\code\chromium_git --checkout=%output% --force-clean --x64-build --no-debug-build --with-pgo-profiles
