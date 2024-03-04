@@ -1,6 +1,6 @@
 (() => {
   const config = {
-    enabledViews: ["fs", "npv"] // "fs" Full screen, "npv" Now Playing View
+    enabledViews: ["fs", "npv"], // "fs" Full screen, "npv" Now Playing View
   };
   const LOGGING = true;
   const importScript = (url) => {
@@ -140,10 +140,11 @@
 
     class CanvasHandler {
       static canvasWrapperSelector = {
-        fs: "#main > div > div:nth-child(5)", // Full screen
-        npv: "#VideoPlayerNpv_ReactPortal" // Now Playing View
-      }
+        fs: ".npv-main-container", // Full screen
+        npv: "#VideoPlayerNpv_ReactPortal", // Now Playing View
+      };
       static canvasExists = false;
+      static anyWrapperExists = false;
       static canvasURL = "";
       static isVideo = true;
 
@@ -178,7 +179,7 @@
         let canvasWrapper = document.createElement("div");
         canvasWrapper.id = "CanvasWrapper";
 
-        if(this.isVideo) {
+        if (this.isVideo) {
           let video = document.createElement("video");
           video.id = "CanvasDisplay";
           video.setAttribute("autoplay", "");
@@ -196,39 +197,67 @@
         }
 
         // add wrapper to DOM
-        if (this.inFullscreen()){
-          if(config.enabledViews.includes("fs")){
-            canvasWrapperElem = document.querySelector(this.canvasWrapperSelector.fs);
+        if (this.inFullscreen()) {
+          if (config.enabledViews.includes("fs")) {
+            canvasWrapperElem = document.querySelector(
+              this.canvasWrapperSelector.fs
+            );
           }
         } else {
-          if(config.enabledViews.includes("npv")){
-            canvasWrapperElem = document.querySelector(this.canvasWrapperSelector.npv);
+          if (config.enabledViews.includes("npv")) {
+            canvasWrapperElem = document.querySelector(
+              this.canvasWrapperSelector.npv
+            );
           }
         }
 
         if (canvasWrapperElem) {
           canvasWrapperElem.appendChild(canvasWrapper);
         }
-        
+
         return canvasWrapper;
       }
 
       static getWrapper() {
         let wrapper = null;
-        if(this.inFullscreen()){
-          if(config.enabledViews.includes("fs")){
-            wrapper = document.querySelector(this.canvasWrapperSelector.fs + " > #CanvasWrapper");
+        if (this.inFullscreen()) {
+          if (config.enabledViews.includes("fs")) {
+            wrapper = document.querySelector(
+              this.canvasWrapperSelector.fs + " > #CanvasWrapper"
+            );
           }
         } else {
-          if(config.enabledViews.includes("npv")){
-            wrapper = document.querySelector(this.canvasWrapperSelector.npv + " > #CanvasWrapper");
+          if (config.enabledViews.includes("npv")) {
+            wrapper = document.querySelector(
+              this.canvasWrapperSelector.npv + " > #CanvasWrapper"
+            );
           }
         }
-        if (!wrapper) {
+        if (!wrapper && this.shouldCreateWrapper()) {
           this.clearWrapper();
           wrapper = this.createWrapper();
         }
         return wrapper;
+      }
+
+      /*
+      Determines if the wrappers exist, and only adds to the DOM if they actually do, otherwise it just spams for no reason.
+      */
+      static shouldCreateWrapper() {
+        if (config.enabledViews.includes("npv")) {
+          if (document.querySelector(this.canvasWrapperSelector.npv)) {
+            this.anyWrapperExists = true;
+            return true;
+          }
+        }
+        if (config.enabledViews.includes("fs")) {
+          if (document.querySelector(this.canvasWrapperSelector.fs)) {
+            this.anyWrapperExists = true;
+            return true;
+          }
+        }
+        this.anyWrapperExists = false;
+        return false;
       }
 
       static clearWrapper() {
@@ -240,28 +269,34 @@
 
       static getVideo() {
         let video = null;
-        if(this.inFullscreen()){
-          if(config.enabledViews.includes("fs")){
-            video = document.querySelector(this.canvasWrapperSelector.fs + " > #CanvasWrapper > #CanvasDisplay");
+        if (this.inFullscreen()) {
+          if (config.enabledViews.includes("fs")) {
+            video = document.querySelector(
+              this.canvasWrapperSelector.fs +
+                " > #CanvasWrapper > #CanvasDisplay"
+            );
           }
         } else {
-          if(config.enabledViews.includes("npv")){
-            video = document.querySelector(this.canvasWrapperSelector.npv + " > #CanvasWrapper > #CanvasDisplay");
+          if (config.enabledViews.includes("npv")) {
+            video = document.querySelector(
+              this.canvasWrapperSelector.npv +
+                " > #CanvasWrapper > #CanvasDisplay"
+            );
           }
         }
         if (!video) {
-          video = this.getWrapper().children.namedItem("CanvasDisplay");
+          video = this.getWrapper()?.children?.namedItem("CanvasDisplay");
         }
         return video;
       }
 
       static updateVideo() {
         let video = this.getVideo();
-        if (this.canvasExists) {
+        if (this.canvasExists && this.anyWrapperExists) {
           if (video.src !== this.canvasURL) {
             this.setVideo(this.canvasURL);
           }
-          if(this.isVideo){
+          if (this.isVideo) {
             if (video.paused) {
               video.play();
             }
@@ -281,14 +316,14 @@
       }
 
       static setVideo(canvas) {
-
-        if(canvas.endsWith(".mp4") || !canvas){ // it's OK to put empty url in video tag but on an image it will show a broken image
-          if(!this.isVideo){
+        if (canvas.endsWith(".mp4") || !canvas) {
+          // it's OK to put empty url in video tag but on an image it will show a broken image
+          if (!this.isVideo) {
             this.clearWrapper();
           }
           this.isVideo = true;
         } else {
-          if(this.isVideo){
+          if (this.isVideo) {
             this.clearWrapper();
           }
           this.isVideo = false;
@@ -299,7 +334,7 @@
         video.src = canvas;
         this.showCanvas();
 
-        if(this.isVideo){
+        if (this.isVideo) {
           // Go!
           video.load();
           video.play();
