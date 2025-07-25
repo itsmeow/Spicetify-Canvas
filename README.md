@@ -11,6 +11,8 @@
 
 <p align="center"><em>The first implementation of <a href="https://canvas.spotify.com/">Spotify Canvas</a> for the Desktop client ever!</em><br/><strong>With XPUI / Spicetify 2.0 support!</strong></p>
 
+## ⚠️This repository has been archived due to Canvas being a built-in feature of the desktop Spotify app in newer versions⚠️
+
 ## Demo
 
 The extension is designed to show Canvases in the fullscreen view. The following are with minimal theming (this is what is included in `Themes/canvas`, for the new XPUI):
